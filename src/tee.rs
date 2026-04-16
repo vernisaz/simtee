@@ -47,13 +47,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.get_opt("r").is_some() {
         let append = cli.get_opt("a").is_some();
         for f in cli.args() {
-            if let Ok(f) = OpenOptions::new()
+            match OpenOptions::new()
                 .append(append)
                 .write(!append)
                 .create(!append)
-                .open(f)
+                .open(&f)
             {
-                out_files.push(f)
+                Ok(f) => out_files.push(f),
+                Err(err) => eprintln!("Can't open {f} for writing -> {err}"),
             }
         }
     }
