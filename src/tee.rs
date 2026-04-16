@@ -50,7 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match OpenOptions::new()
                 .append(append)
                 .write(!append)
-                .create(!append)
+                .create_new(!append)
                 .open(&f)
             {
                 Ok(f) => out_files.push(f),
