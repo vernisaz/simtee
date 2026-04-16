@@ -17,7 +17,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .description("Overwrite result")
         .opt("v", OptTyp::None)?
         .description("Version number, all other operations ignored")
-        .opt("h", OptTyp::None)?;
+        .opt("h", OptTyp::None)?
+        .description("Help for the utility");
     if cli.get_opt("v").is_some() {
         println!("Simple Tee version {}", env!("VERSION"));
         return Ok(());
@@ -30,7 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
-    let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o") {
+    let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o") && cli.get_opt("r").is_none() {
         let overwrite = cli.get_opt("w").is_some();
         Box::new(
             OpenOptions::new()
@@ -44,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     // create a vec of files for -r operations
     let mut out_files = Vec::with_capacity(cli.args().len());
-    if cli.get_opt("r").is_some() {
+    if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
         for f in cli.args() {
             match OpenOptions::new()
