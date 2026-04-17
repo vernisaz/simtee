@@ -24,7 +24,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     } else if cli.get_opt("h").is_some() {
         println!(
-            "Simple Tee, usage :  simtee [options...] [<file>...]\nWhere options:{}",
+            "Simple Tee, usage :\n  simtee [options...] [<file>...]\nWhere options:{}",
             cli.get_description().ok_or("no help specified")?
         );
         return Ok(());
