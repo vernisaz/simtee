@@ -24,14 +24,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     } else if cli.get_opt("h").is_some() {
         println!(
-            "Simple Tee, usage :\n  simtee [options...] [<file>...]\nWhere options:{}",
+            "Simple Tee\nUsage: simtee [options...] [<file>...]\nWhere options are:{}",
             cli.get_description().ok_or("no help specified")?
         );
         return Ok(());
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
-    let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o") && cli.get_opt("r").is_none() {
+    let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o")
+        && cli.get_opt("r").is_none()
+    {
         let overwrite = cli.get_opt("w").is_some();
         Box::new(
             OpenOptions::new()
