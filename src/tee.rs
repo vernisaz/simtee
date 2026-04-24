@@ -43,6 +43,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Box::new(
             OpenOptions::new()
                 .truncate(overwrite)
+                .append(!overwrite)
                 .write(true)
                 .create(!overwrite)
                 .open(name)?,
