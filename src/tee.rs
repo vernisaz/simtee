@@ -3,6 +3,7 @@ use std::{
     fs::OpenOptions,
     io::Write,
     io::{self, Read},
+    time::{SystemTime,UNIX_EPOCH}
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -17,10 +18,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .description("Overwrite result")
         .opt("v", OptTyp::None)?
         .description("Version number, all other operations ignored")
+        .opt("-version", OptTyp::None)?
         .opt("h", OptTyp::None)?
         .description("Help for the utility");
     if cli.get_opt("v").is_some() {
-        println!("Simple Tee version {}", env!("VERSION"));
+        println!("Simple Tee version {}, copyright © {} D. Rogatkin", env!("VERSION"), year_now());
         return Ok(());
     } else if cli.get_opt("h").is_some() {
         println!(
@@ -28,6 +30,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             cli.get_description().ok_or("no help specified")?
         );
         return Ok(());
+    }
+    if let Some(invalid_opts) = cli.get_errors() {
+         return Err(format!("Some unrecognized options {invalid_opts:?} ... specified, correct them").into());
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
@@ -45,7 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         Box::new(io::stdout())
     };
-    // create a vec of files for -r operations
+    // create a vec of files for reverse (-r) operation
     let mut out_files = Vec::with_capacity(cli.args().len());
     if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
@@ -101,4 +106,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     Ok(())
+}
+
+#[inline]
+pub fn year_now() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs()
+        / 31556952
+        + 1970
 }
