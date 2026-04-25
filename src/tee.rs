@@ -1,6 +1,6 @@
 use simcli::{CliNoMut, OptTyp, OptVal};
 use std::{
-    fs::{OpenOptions,File},
+    fs::{File},
     io::Write,
     io::{self, Read},
     time::{SystemTime,UNIX_EPOCH}
@@ -32,14 +32,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
     if let Some(invalid_opts) = cli.get_errors() {
-         return Err(format!("Some unrecognized options {invalid_opts:?} ... specified, correct them").into());
+         return Err(format!("Some unrecognized option(s) {invalid_opts:?} ... was specified").into());
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
+     let overwrite = cli.get_opt("w").is_some();
     let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o")
         && cli.get_opt("r").is_none()
     {
-        let overwrite = cli.get_opt("w").is_some();
         Box::new(File::options()
                 .truncate(overwrite)
                 .append(!overwrite)
@@ -55,10 +55,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
         for f in cli.args() {
-            match OpenOptions::new()
+            match File::options()
+            .truncate(overwrite)
                 .append(append)
-                .write(!append)
-                .create_new(!append)
+                .write(!append || overwrite)
+                .create_new(!append && !overwrite)
                 .open(&f)
             {
                 Ok(f) => out_files.push(f),
@@ -85,7 +86,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     if cli.get_opt("r").is_none() {
         for f in cli.args() {
-            let mut file = match OpenOptions::new().read(true).open(&f) {
+            let mut file = match File::options().read(true).open(&f) {
                 Ok(file) => file,
                 _ => continue,
             };
