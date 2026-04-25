@@ -1,6 +1,6 @@
 use simcli::{CliNoMut, OptTyp, OptVal};
 use std::{
-    fs::OpenOptions,
+    fs::{OpenOptions,File},
     io::Write,
     io::{self, Read},
     time::{SystemTime,UNIX_EPOCH}
@@ -40,8 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         && cli.get_opt("r").is_none()
     {
         let overwrite = cli.get_opt("w").is_some();
-        Box::new(
-            OpenOptions::new()
+        Box::new(File::options()
                 .truncate(overwrite)
                 .append(!overwrite)
                 .write(true)
