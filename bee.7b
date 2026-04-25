@@ -5,8 +5,25 @@ crate_dir=..${~/~}crates
 doc_dir=..${~/~}docs
 comp opts=[--extern,simcli]
 
-version=1.01
+version=1.02
 set_env(VERSION,version)
 
-#include(..${~/~}simscript${~/~}comm-test.7b)
+ZIP=.${~/~}${project}-${version}.zip
+target package::Creates a zip with the tool and README files {
+	dependency {
+        target(build)
+    }
+    dependency {
+    	anynewer(bee.7b,ZIP)
+    }
+    zip(ZIP,
+	-B ${project},
+	.${~/~}README.md,
+	-B ${project},
+	.${~/~}${project}${ext}
+     )
+	display(done ${~~})
+}
+
+#include(..${~/~}simscript${~/~}comm-test.7b);
 include(common);
