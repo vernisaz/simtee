@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .truncate(overwrite)
                 .append(append)
                 .write(!append || overwrite)
-                .create_new(!append && !overwrite)
+                .create_new(!append)
                 .open(&f)
             {
                 Ok(f) => out_files.push(f),
