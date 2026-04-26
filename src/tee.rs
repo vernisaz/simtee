@@ -61,6 +61,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut out_files = Vec::with_capacity(cli.args().len());
     if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
+        if overwrite && append {
+            return Err("Overwrite and append options can't be applied together".into());
+        }
         for f in cli.args() {
             match File::options()
                 .truncate(overwrite)
