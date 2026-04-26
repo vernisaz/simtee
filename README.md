@@ -8,7 +8,7 @@ A file specified by `-o` option can be used instead of the stdout. The same beha
 the standard **tee** command. It can't be used with `-o` option..
 
 The option `-a` instructs to append the generated result insted of writing a new file. The utility doesn't 
-overwrites existing files unless option `-w` specified. These two options can't be specified together.
+overwrites existing files unless option `-w` specified. These two options are mutually exclusive.
 
 ## Build
 Use the provided [bee.7b](https://github.com/vernisaz/simtee/blob/master/bee.7b) script
