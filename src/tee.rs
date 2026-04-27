@@ -41,9 +41,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
     if let Some(invalid_opts) = cli.get_errors() {
-        return Err(
-            format!("Some unrecognized option(s) {invalid_opts:?} ... was specified").into(),
-        );
+        return Err(format!(
+            "Some unrecognized option(s) '{}' ... was specified",
+            invalid_opts.join(", ")
+        )
+        .into());
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
@@ -78,7 +80,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .open(&f)
             {
                 Ok(f) => out_files.push(f),
-                Err(err) => eprintln!("Can't open {f} for writing: {err}"),
+                Err(err) => eprintln!(
+                    "Can't open {} for writing: {}",
+                    f.blue(),
+                    err.to_string().red()
+                ),
             }
         }
     }
@@ -94,7 +100,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
             }
             Err(e) => {
-                eprintln!("Error reading from stdin: {e}");
+                eprintln!("Error reading from stdin: {}", e.to_string().red());
                 break; //std::process::exit(1);
             }
         }
@@ -114,7 +120,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         out.write_all(&buffer[..bytes_read])?;
                     }
                     Err(e) => {
-                        eprintln!("Error reading from {f}: {e}");
+                        eprintln!("Error reading from {}: {}", f.blue(), e.to_string().red());
                         break; //std::process::exit(1);
                     }
                 }
