@@ -32,7 +32,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     } else if cli.get_opt("h").is_some() {
         println!(
-            "Simple Tee\nUsage: simtee [options...] [<file>...]\nWhere options are:{}",
+            "Usage: simtee [options...] [<file>...]\nWhere options are:{}",
             cli.get_description()
                 .ok_or("no help specified")?
                 .bright()
@@ -41,10 +41,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
     if let Some(invalid_opts) = cli.get_errors() {
-        return Err(Box::new(format!(
-            "Some unrecognized option(s) '{}' ... was specified",
-            invalid_opts.join(", ")
-        ).red()
+        return Err(Box::new(
+            format!(
+                "Some unrecognized option(s) '{}' ... was specified",
+                invalid_opts.join(", ")
+            )
+            .red(),
         ));
     }
     const SIZE: usize = 1024 * 512;
@@ -69,7 +71,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
         if overwrite && append {
-            return Err(Box::new("Overwrite and append options can't be applied together".red()));
+            return Err(Box::new(
+                "Overwrite and append options can't be applied together".red(),
+            ));
         }
         for f in cli.args() {
             match File::options()
