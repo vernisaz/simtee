@@ -1,4 +1,5 @@
 use simcli::{CliNoMut, OptTyp, OptVal};
+use simcolor::Colorized;
 use std::{
     fs::File,
     io::Write,
@@ -23,15 +24,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .description("Help for the utility");
     if cli.get_opt("v").is_some() {
         println!(
-            "Simple Tee version {}, copyright © {} D. Rogatkin",
-            env!("VERSION"),
-            year_now()
+            "{} version {}, Copyright © {} D. Rogatkin",
+            env!("NAME").blue().bright().bold(),
+            env!("VERSION").green(),
+            year_now().bright().magenta()
         );
         return Ok(());
     } else if cli.get_opt("h").is_some() {
         println!(
             "Simple Tee\nUsage: simtee [options...] [<file>...]\nWhere options are:{}",
-            cli.get_description().ok_or("no help specified")?
+            cli.get_description()
+                .ok_or("no help specified")?
+                .bright()
+                .blue()
         );
         return Ok(());
     }

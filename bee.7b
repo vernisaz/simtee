@@ -3,10 +3,11 @@ main=src${~/~}tee
 common =..${~/~}simscript${~/~}comm-build.7b:file
 crate_dir=..${~/~}crates
 doc_dir=..${~/~}docs
-comp opts=[--extern,simcli]
+comp opts=[--extern,simcli,--extern,simcolor]
 
-version=1.02
+version=1.03
 set_env(VERSION,version)
+set_env(NAME,Sim Tee)
 
 ZIP=.${~/~}${project}-${version}.zip
 target package::Creates a zip with the tool and README files {
