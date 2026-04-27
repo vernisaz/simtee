@@ -41,11 +41,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
     if let Some(invalid_opts) = cli.get_errors() {
-        return Err(format!(
+        return Err(Box::new(format!(
             "Some unrecognized option(s) '{}' ... was specified",
             invalid_opts.join(", ")
-        )
-        .into());
+        ).red()
+        ));
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
@@ -69,7 +69,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
         let append = cli.get_opt("a").is_some();
         if overwrite && append {
-            return Err("Overwrite and append options can't be applied together".into());
+            return Err(Box::new("Overwrite and append options can't be applied together".red()));
         }
         for f in cli.args() {
             match File::options()
