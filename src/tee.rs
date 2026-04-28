@@ -113,7 +113,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for f in cli.args() {
             let mut file = match File::options().read(true).open(&f) {
                 Ok(file) => file,
-                _ => continue,
+                Err(e) => {
+                    eprintln!("Error: {} reading from {f}", e.to_string().red());
+                    continue;
+                }
             };
             loop {
                 match file.read(&mut buffer) {
