@@ -1,4 +1,7 @@
+#[cfg(not(target_os = "windows"))]
 use simcli::{CliNoMut, OptTyp, OptVal};
+#[cfg(target_os = "windows")]
+use simcli::{CliNoMut, OptTyp, OptVal, WildCardExpansion};
 use simcolor::Colorized;
 use std::{
     fs::File,
@@ -22,6 +25,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .opt("-version", OptTyp::None)?
         .opt("h", OptTyp::None)?
         .description("Help for the utility");
+    #[cfg(target_os = "windows")]
+    cli.process_wildcard(WildCardExpansion::All);
     if cli.get_opt("v").is_some() {
         println!(
             "{} version {}, Copyright © {} D. Rogatkin",
