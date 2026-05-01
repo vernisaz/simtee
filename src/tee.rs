@@ -84,14 +84,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             match File::options()
                 .truncate(overwrite)
                 .append(append)
-                .write(!append || overwrite)
-                .create_new(!append)
+                .write(!append | overwrite)
+                .create_new(!append & !overwrite)
+                .create(append | overwrite)
                 .open(&f)
             {
                 Ok(f) => out_files.push(f),
                 Err(err) => eprintln!(
                     "Can't open {} for writing: {}",
-                    f.blue(),
+                    f.blue().bright(),
                     err.to_string().red()
                 ),
             }
