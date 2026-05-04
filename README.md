@@ -5,7 +5,7 @@ It takes the stdin content and concatenates it to the content of speciifed files
 A file specified by `-o` option can be used instead of the stdout. The same behavior can be achieved by redirecting the stdout to a file.
 
 `-r` option can reverse the behavior and use specified files to get content of the stdin similary to
-the standard **tee** command. It can't be used with `-o` option..
+the standard **tee** command. It can't be used with `-o` option.
 
 The option `-a` instructs to append the generated result insted of writing a new file. The utility doesn't 
 overwrites existing files unless option `-w` specified. These two options are mutually exclusive.
