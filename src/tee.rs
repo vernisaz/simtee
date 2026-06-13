@@ -21,8 +21,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .opt("w", OptTyp::None)?
         .description("Overwrite result")
         .opt("v", OptTyp::None)?
+        .alias("-version")?
         .description("Version number, all other operations ignored")
-        .opt("-version", OptTyp::None)?
         .opt("h", OptTyp::None)?
         .description("Help for the utility");
     #[cfg(target_os = "windows")]
