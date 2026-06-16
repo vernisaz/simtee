@@ -27,7 +27,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .description("Help for the utility");
     #[cfg(target_os = "windows")]
     cli.process_wildcard(WildCardExpansion::All);
-    if cli.get_opt("v").is_some() {
+    if cli.get_opt("v")?.is_some() {
         println!(
             "{} version {}, Copyright © {} D. Rogatkin",
             env!("NAME").blue().bright().bold(),
@@ -35,7 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             year_now().bright().magenta()
         );
         return Ok(());
-    } else if cli.get_opt("h").is_some() {
+    } else if cli.get_opt("h")?.is_some() {
         println!(
             "Usage: simtee [options...] [<file>...]\nWhere options are:{}",
             cli.get_description()
@@ -56,9 +56,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     const SIZE: usize = 1024 * 512;
     let mut buffer = [0u8; SIZE]; // Fixed-size array initialized with zeros
-    let overwrite = cli.get_opt("w").is_some();
-    let mut out: Box<dyn Write> = if let Some(OptVal::Str(name)) = cli.get_opt("o")
-        && cli.get_opt("r").is_none()
+    let overwrite = cli.get_opt("w")?.is_some();
+    let mut out: Box<dyn Write> = if let Ok(Some(OptVal::Str(name))) = cli.get_opt("o")
+        && cli.get_opt("r")?.is_none()
     {
         Box::new(
             File::options()
@@ -73,8 +73,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     // create a vec of files for reverse (-r) operation
     let mut out_files = Vec::with_capacity(cli.args().len());
-    if cli.get_opt("r").is_some() && cli.get_opt("o").is_none() {
-        let append = cli.get_opt("a").is_some();
+    if cli.get_opt("r")?.is_some() && cli.get_opt("o")?.is_none() {
+        let append = cli.get_opt("a")?.is_some();
         if overwrite && append {
             return Err(Box::new(
                 "Overwrite and append options can't be applied together".red(),
@@ -115,7 +115,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    if cli.get_opt("r").is_none() {
+    if cli.get_opt("r")?.is_none() {
         for f in cli.args() {
             let mut file = match File::options().read(true).open(&f) {
                 Ok(file) => file,
