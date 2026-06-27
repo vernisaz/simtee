@@ -13,17 +13,22 @@ use std::{
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = CliNoMut::new();
     cli.opt("o", OptTyp::Str)?
+        .alias("-output")?
         .description("Out file name")
         .opt("r", OptTyp::None)?
-        .description("Reverse operation")
+        .alias("-reverse")?
+        .description("Reverse operation - write result to specified files")
         .opt("a", OptTyp::None)?
+        .alias("-append")?
         .description("Append result")
         .opt("w", OptTyp::None)?
+        .alias("-overwrite")?
         .description("Overwrite result")
         .opt("v", OptTyp::None)?
         .alias("-version")?
         .description("Version number, all other operations ignored")
         .opt("h", OptTyp::None)?
+        .alias("-help")?
         .description("Help for the utility");
     #[cfg(target_os = "windows")]
     cli.process_wildcard(WildCardExpansion::All);
