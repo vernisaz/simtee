@@ -5,7 +5,7 @@ crate_dir=..${~/~}crates
 doc_dir=..${~/~}docs
 comp opts=[--extern,simcli,--extern,simcolor]
 
-version=1.04
+version=1.05
 set_env(VERSION,version)
 set_env(NAME,Sim Tee)
 
