@@ -103,21 +103,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     }
-    loop {
-        match io::stdin().read(&mut buffer) {
-            Ok(bytes_read) => {
-                if bytes_read == 0 {
-                    break;
-                };
-                out.write_all(&buffer[..bytes_read])?;
-                for mut w in &out_files {
-                    w.write_all(&buffer[..bytes_read])?
-                }
-            }
-            Err(e) => {
-                eprintln!("Error reading from stdin: {}", e.to_string().red());
-                break; //std::process::exit(1);
-            }
+    while let Ok(bytes_read) = io::stdin().read(&mut buffer)
+        && bytes_read > 0
+    {
+        out.write_all(&buffer[..bytes_read])?;
+        for mut w in &out_files {
+            w.write_all(&buffer[..bytes_read])?
         }
     }
     if cli.get_opt("r")?.is_none() {
