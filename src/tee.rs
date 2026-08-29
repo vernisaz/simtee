@@ -78,7 +78,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     // create a vec of files for reverse (-r) operation
     let mut out_files = Vec::with_capacity(cli.args().len());
-    if cli.get_opt("r")?.is_some() && cli.get_opt("o").unwrap().is_none() {
+    if cli.get_opt("r").unwrap().is_some() && cli.get_opt("o").unwrap().is_none() {
         let append = cli.get_opt("a").unwrap().is_some();
         if overwrite && append {
             return Err(Box::new(
@@ -139,12 +139,4 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-#[inline]
-pub fn year_now() -> u64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or_default()
-        .as_secs()
-        / 31556952
-        + 1970
-}
+include!("../../simincmod/date_year.rs");
